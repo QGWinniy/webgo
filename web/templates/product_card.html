@@ -8,9 +8,9 @@
     {{ $count = index . $p.ID }}
 {{ end }}
 
-<div class="col-12 col-md-4 mb-4">
+<div class="col-12 col-md-6 mb-4">
     <div class="card h-100 border-0 shop-card">
-        <a href="/product/{{$p.ID}}" class="text-decoration-none text-dark">
+        <a href="/product/{{$p.ID}}" class="text-decoration-none">
             <div class="shop-card-img-wrap" id="wrap-{{$p.ID}}">
                 <div class="shop-card-img-track" id="track-{{$p.ID}}">
                     {{range $p.Images}}
@@ -32,7 +32,7 @@
 
             <div class="card-body text-center">
                 <h5 class="card-title fw-bold">{{$p.Name}}</h5>
-                <p class="card-text text-muted">{{$p.Description}}</p>
+                <p class="card-text">{{$p.Description}}</p>
                 <h4 class="mb-3">{{$p.Price}} ₽</h4>
 
                 {{if eq $count 0}}
@@ -52,7 +52,7 @@
                             <button class="btn btn-pill-circle btn-pill-circle-minus">−</button>
                         </form>
 
-                        <div class="fw-bold px-2">{{$count}} шт</div>
+                        <div class="fw-bold px-2 qty-label">{{$count}} шт</div>
 
                         <form action="/cart/add" method="POST">
                             <input type="hidden" name="id" value="{{$p.ID}}">
@@ -74,15 +74,16 @@
 .shop-card {
     border-radius: 17px;
     overflow: hidden;
-    box-shadow: 0 8px 20px rgba(20, 30, 90, .15);
-    background: #ffffff;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, .25) !important;
+    box-shadow: 0 8px 24px rgba(10, 15, 60, .25);
 }
 
 .shop-card-img-wrap {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
-    background: #f1f3f5;
+    aspect-ratio: 3 / 2;
+    background: rgba(255, 255, 255, .06);
     border-radius: 17px 17px 0 0;
     overflow: hidden;
 }
@@ -98,7 +99,7 @@
     flex: 0 0 100%;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .shop-card-nav {
@@ -144,6 +145,17 @@
 .shop-card-dot.active {
     background: #ffffff;
     transform: scale(1.3);
+}
+
+.shop-card .card-title,
+.shop-card .card-text,
+.shop-card h4,
+.shop-card .qty-label {
+    color: #ffffff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+}
+.shop-card .card-text {
+    color: #e7ecff;
 }
 
 .btn-pill-accent-teal {

@@ -46,32 +46,6 @@
             text-align: center;
         }
 
-        .ozon-promo {
-            background: rgba(76, 110, 245, .35);
-            border-radius: 17px;
-            padding: 1.5rem 1.25rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        .ozon-promo p {
-            color: #ffe3e3;
-            margin-bottom: 1rem;
-            white-space: pre-line;
-        }
-        .btn-pill-ozon {
-            background: #ffffff;
-            color: #031e8a;
-            border: none;
-            border-radius: 40px;
-            font-weight: 700;
-            padding: .65rem 1.75rem;
-            display: inline-block;
-        }
-        .btn-pill-ozon:hover {
-            background: #f1f3f5;
-            color: #031e8a;
-        }
-
         .shop-footer {
             background: #4263eb;
             margin-top: 3rem;
@@ -102,6 +76,15 @@
             width: 1.5rem;
             text-align: center;
         }
+
+        .footer-link-btn.ozon {
+            background: #ffffff;
+            color: #031e8a;
+        }
+        .footer-link-btn.ozon:hover {
+            background: #f1f3f5;
+            color: #031e8a;
+        }
     </style>
 </head>
 <body>
@@ -114,11 +97,6 @@
     </nav>
 
     <div class="container">
-        <div class="ozon-promo">
-            <p>Дорогие друзья!&#10;Также доступен заказ на маркетплейсе ОЗОН с доставкой по России</p>
-            <a href="https://www.ozon.ru/seller/izdatelstvo-shmel-428801" class="btn-pill-ozon" target="_blank" rel="noopener">Заказать на OZON</a>
-        </div>
-
         <h1 class="mb-4 page-title">Каталог товаров</h1>
 
         <div class="row">
@@ -136,11 +114,11 @@
 
     <footer class="shop-footer">
         <div class="container">
+            <a href="https://www.ozon.ru/seller/izdatelstvo-shmel-428801" class="footer-link-btn ozon" target="_blank" rel="noopener">
+                <span class="icon">🛍️</span> Купить на OZON
+            </a>
             <a href="https://wa.me/79624037100" class="footer-link-btn" target="_blank" rel="noopener">
                 <span class="icon">✏️</span> Написать
-            </a>
-            <a href="http://45chudes.ru" class="footer-link-btn" target="_blank" rel="noopener">
-                <span class="icon">🌐</span> Перейти на сайт
             </a>
             <a href="tel:+79624037100" class="footer-link-btn">
                 <span class="icon">📞</span> Позвонить

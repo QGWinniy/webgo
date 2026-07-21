@@ -18,7 +18,8 @@ type Product struct {
 	Price       int      `json:"price"`
 	Description string   `json:"description"`
 	Images      []string `json:"images"`
-	HtmlPath    string   `json:"html_path"`
+
+	// HtmlPath    string   `json:"html_path"`
 }
 
 var db *sql.DB
@@ -48,7 +49,7 @@ func productGet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	// 1. берём товары
-	rows, err := db.Query("SELECT id, name, price, description, html_path FROM products")
+	rows, err := db.Query("SELECT id, name, price, description FROM products WHERE availability = true")
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -60,7 +61,8 @@ func productGet(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var p Product
 
-		err := rows.Scan(&p.ID, &p.Name, &p.Price, &p.Description, &p.HtmlPath)
+		// err := rows.Scan(&p.ID, &p.Name, &p.Price, &p.Description, &p.HtmlPath)
+		err := rows.Scan(&p.ID, &p.Name, &p.Price, &p.Description)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
@@ -119,7 +121,7 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 	var p Product
 
 	err = db.QueryRow(`
-		SELECT id, name, price, description, html_path
+		SELECT id, name, price, description
 		FROM products
 		WHERE id = $1
 	`, id).Scan(
@@ -127,7 +129,7 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 		&p.Name,
 		&p.Price,
 		&p.Description,
-		&p.HtmlPath,
+		// &p.HtmlPath,
 	)
 
 	if err != nil {

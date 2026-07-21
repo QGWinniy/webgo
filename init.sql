@@ -3,7 +3,6 @@ CREATE TABLE products (
     name TEXT,
     price INT,
     description TEXT,
-    html_path TEXT,
     availability BOOL
 );
 
