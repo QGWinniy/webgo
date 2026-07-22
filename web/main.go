@@ -35,6 +35,13 @@ func toJSON(v any) string {
 	return string(b)
 }
 
+func nl2br(s string) template.HTML {
+	s = strings.ReplaceAll(s, `\n`, "\n") // на случай литерального "\n" в базе
+	escaped := template.HTMLEscapeString(s)
+	escaped = strings.ReplaceAll(escaped, "\n", "<br>")
+	return template.HTML(escaped)
+}
+
 func dict(values ...interface{}) map[string]interface{} {
 	m := make(map[string]interface{})
 	for i := 0; i < len(values); i += 2 {
@@ -72,21 +79,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Products []Product
-		Counts   map[int]int
+		Products   []Product
+		Counts     map[int]int
+		ReturnPath string
 	}{
-		Products: products,
-		Counts:   counts,
+		Products:   products,
+		Counts:     counts,
+		ReturnPath: r.URL.Path,
 	}
 
 	tmpl, err := template.New("index.html").
 		Funcs(template.FuncMap{
 			"json": toJSON,
 			"dict": dict,
+			"nl2br": nl2br,
 		}).
 		ParseFiles(
 			"templates/index.html",
 			"templates/product_card.html",
+			
 		)
 
 	if err != nil {
@@ -315,74 +326,62 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-// func productHandler(w http.ResponseWriter, r *http.Request) {
-// 	id := strings.TrimPrefix(r.URL.Path, "/product/")
+func productHandler(w http.ResponseWriter, r *http.Request) {
 
-// 	resp, err := http.Get("http://api:3000/product/" + id)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
-// 	defer resp.Body.Close()
+	id := strings.TrimPrefix(r.URL.Path, "/product/")
 
-// 	var product Product
-// 	if err := json.NewDecoder(resp.Body).Decode(&product); err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
+	resp, err := http.Get("http://api:3000/product/" + id)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	defer resp.Body.Close()
 
+	var product Product
 
-// 	count := 0
-// 	if cookie, err := r.Cookie("cart"); err == nil && cookie.Value != "" {
-// 		for _, idStr := range strings.Split(cookie.Value, ",") {
-// 			if idStr == strconv.Itoa(product.ID) {
-// 				count++
-// 			}
-// 		}
-// 	}
+	if err := json.NewDecoder(resp.Body).Decode(&product); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
-// 	relPath := strings.Trim(product.HtmlPath, "/")
-// 	basePath := "./static/" + relPath
+	count := 0
 
-// 	htmlBytes, err := os.ReadFile(basePath + "/index.html")
-// 	if err != nil {
-// 		http.Error(w, "HTML not found: "+err.Error(), 500)
-// 		return
-// 	}
+	if cookie, err := r.Cookie("cart"); err == nil {
 
-// 	baseHref := "/static/" + relPath + "/"
-// 	htmlStr := string(htmlBytes)
-// 	baseTag := `<base href="` + baseHref + `">`
-// 	lower := strings.ToLower(htmlStr)
-// 	if idx := strings.Index(lower, "<head>"); idx != -1 {
-// 		insertAt := idx + len("<head>")
-// 		htmlStr = htmlStr[:insertAt] + baseTag + htmlStr[insertAt:]
-// 	} else {
-// 		htmlStr = baseTag + htmlStr
-// 	}
+		for _, idStr := range strings.Split(cookie.Value, ",") {
 
-// 	tmpl, err := template.New("product").
-// 		Funcs(template.FuncMap{
-// 			"json": toJSON,
-// 		}).
-// 		Parse(htmlStr)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
+			if idStr == strconv.Itoa(product.ID) {
+				count++
+			}
 
-// 	data := struct {
-// 		Product Product
-// 		Count   int
-// 	}{
-// 		Product: product,
-// 		Count:   count,
-// 	}
+		}
 
-// 	if err := tmpl.Execute(w, data); err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 	}
-// }
+	}
+
+	data := struct {
+		Product Product
+		Count   int
+	}{
+		Product: product,
+		Count: count,
+	}
+
+	tmpl, err := template.New("product.html").
+		Funcs(template.FuncMap{
+			"json":  toJSON,
+			"nl2br": nl2br,
+		}).
+		ParseFiles("templates/product.html")
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	if err := tmpl.ExecuteTemplate(w, "product.html", data); err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+}
 
 func main() {
 	http.HandleFunc("/", handler)
@@ -399,7 +398,7 @@ func main() {
 
 	http.HandleFunc("/checkout", checkoutHandler)
 
-	// http.HandleFunc("/product/", productHandler)
+	http.HandleFunc("/product/", productHandler)
 
 	http.HandleFunc("/cart", cartHandler)
 

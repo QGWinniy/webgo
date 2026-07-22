@@ -102,7 +102,7 @@
         <div class="row">
             {{if .Products}}
                 {{range .Products}}
-                    {{template "product_card.html" (dict "Product" . "Counts" $.Counts)}}
+                    {{template "product_card.html" (dict "Product" . "Counts" $.Counts "Return" $.ReturnPath)}}
                 {{end}}
             {{else}}
                 <p class="empty-note">Товары не найдены.</p>

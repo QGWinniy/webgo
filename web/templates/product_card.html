@@ -2,6 +2,7 @@
 
 {{ $p := .Product }}
 {{ $counts := .Counts }}
+{{ $return := .Return }}
 
 {{ $count := 0 }}
 {{ with $counts }}
@@ -9,83 +10,84 @@
 {{ end }}
 
 <div class="col-12 col-md-6 mb-4">
-    <div class="card h-100 border-0 shop-card">
-        <a href="/product/{{$p.ID}}" class="text-decoration-none">
-            <div class="shop-card-img-wrap" id="wrap-{{$p.ID}}">
-                <div class="shop-card-img-track" id="track-{{$p.ID}}">
-                    {{range $p.Images}}
-                        <img src="{{.}}" class="shop-card-img-slide">
+    <div class="shop-card-square" id="card-{{$p.ID}}" data-href="/product/{{$p.ID}}">
+
+        <div class="shop-card-img-wrap" id="wrap-{{$p.ID}}">
+            <div class="shop-card-img-track" id="track-{{$p.ID}}">
+                {{range $p.Images}}
+                    <img src="{{.}}" class="shop-card-img-slide">
+                {{end}}
+            </div>
+
+            {{if gt (len $p.Images) 1}}
+                <button type="button" class="shop-card-nav shop-card-nav-prev" data-id="{{$p.ID}}" data-dir="-1" aria-label="Предыдущее фото">‹</button>
+                <button type="button" class="shop-card-nav shop-card-nav-next" data-id="{{$p.ID}}" data-dir="1" aria-label="Следующее фото">›</button>
+
+                <div class="shop-card-dots" id="dots-{{$p.ID}}">
+                    {{range $idx, $img := $p.Images}}
+                        <span class="shop-card-dot{{if eq $idx 0}} active{{end}}"></span>
                     {{end}}
                 </div>
+            {{end}}
+        </div>
 
-                {{if gt (len $p.Images) 1}}
-                    <button type="button" class="shop-card-nav shop-card-nav-prev" data-id="{{$p.ID}}" data-dir="-1" aria-label="Предыдущее фото">‹</button>
-                    <button type="button" class="shop-card-nav shop-card-nav-next" data-id="{{$p.ID}}" data-dir="1" aria-label="Следующее фото">›</button>
+        <div class="shop-card-overlay">
+            <h5 class="card-title fw-bold">{{$p.Name}}</h5>
+            <p class="card-text">{{nl2br $p.Description}}</p>
+            <h4 class="mb-3">{{$p.Price}} ₽</h4>
 
-                    <div class="shop-card-dots" id="dots-{{$p.ID}}">
-                        {{range $idx, $img := $p.Images}}
-                            <span class="shop-card-dot{{if eq $idx 0}} active{{end}}"></span>
-                        {{end}}
-                    </div>
-                {{end}}
-            </div>
+            {{if eq $count 0}}
 
-            <div class="card-body text-center">
-                <h5 class="card-title fw-bold">{{$p.Name}}</h5>
-                <p class="card-text">{{$p.Description}}</p>
-                <h4 class="mb-3">{{$p.Price}} ₽</h4>
+                <form action="/cart/add" method="POST" class="cart-form d-flex justify-content-center gap-2 align-items-center">
+                    <input type="hidden" name="id" value="{{$p.ID}}">
+                    <input type="hidden" name="qty" value="1">
+                    <input type="hidden" name="return" value="{{$return}}">
+                    <button type="submit" class="btn btn-pill-accent">Добавить в корзину</button>
+                </form>
 
-                {{if eq $count 0}}
+            {{else}}
 
-                    <form action="/cart/add" method="POST" class="d-flex justify-content-center gap-2 align-items-center">
+                <div class="d-flex justify-content-center align-items-center gap-2">
+
+                    <form action="/cart/remove" method="POST" class="cart-form">
                         <input type="hidden" name="id" value="{{$p.ID}}">
-                        <input type="hidden" name="qty" value="1" >
-                        <button class="btn btn-pill-accent-teal">Добавить в корзину</button>
+                        <input type="hidden" name="return" value="{{$return}}">
+                        <button type="submit" class="btn btn-pill-circle btn-pill-circle-minus">−</button>
                     </form>
 
-                {{else}}
+                    <div class="fw-bold px-2 qty-label">{{$count}} шт</div>
 
-                    <div class="d-flex justify-content-center align-items-center gap-2">
+                    <form action="/cart/add" method="POST" class="cart-form">
+                        <input type="hidden" name="id" value="{{$p.ID}}">
+                        <input type="hidden" name="qty" value="1">
+                        <input type="hidden" name="return" value="{{$return}}">
+                        <button type="submit" class="btn btn-pill-circle btn-pill-circle-plus">+</button>
+                    </form>
 
-                        <form action="/cart/remove" method="POST">
-                            <input type="hidden" name="id" value="{{$p.ID}}">
-                            <button class="btn btn-pill-circle btn-pill-circle-minus">−</button>
-                        </form>
+                </div>
 
-                        <div class="fw-bold px-2 qty-label">{{$count}} шт</div>
-
-                        <form action="/cart/add" method="POST">
-                            <input type="hidden" name="id" value="{{$p.ID}}">
-                            <input type="hidden" name="qty" value="1">
-                            <button class="btn btn-pill-circle btn-pill-circle-plus">+</button>
-                        </form>
-
-                    </div>
-
-                {{end}}
-
-            </div>
-        </a>
+            {{end}}
+        </div>
 
     </div>
 </div>
 
 <style>
-.shop-card {
-    border-radius: 17px;
+.shop-card-square {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 22px;
     overflow: hidden;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, .25) !important;
-    box-shadow: 0 8px 24px rgba(10, 15, 60, .25);
+    cursor: pointer;
+    background: rgba(255, 255, 255, .06);
+    box-shadow: 0 10px 26px rgba(4, 14, 26, .35);
 }
 
 .shop-card-img-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 3 / 2;
-    background: rgba(255, 255, 255, .06);
-    border-radius: 17px 17px 0 0;
-    overflow: hidden;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
 }
 
 .shop-card-img-track {
@@ -100,6 +102,12 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform .5s ease, filter .5s ease;
+}
+
+.shop-card-square:hover .shop-card-img-slide {
+    transform: scale(1.08);
+    filter: brightness(.5);
 }
 
 .shop-card-nav {
@@ -110,8 +118,8 @@
     height: 32px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, .75);
-    color: #364fc7;
+    background: rgba(255, 255, 255, .8);
+    color: #10283d;
     font-size: 1.2rem;
     font-weight: 700;
     line-height: 1;
@@ -119,27 +127,29 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    z-index: 2;
 }
 .shop-card-nav:hover {
     background: #ffffff;
 }
-.shop-card-nav-prev { left: 8px; }
-.shop-card-nav-next { right: 8px; }
+.shop-card-nav-prev { left: 10px; }
+.shop-card-nav-next { right: 10px; }
 
 .shop-card-dots {
     position: absolute;
-    bottom: 8px;
+    bottom: 10px;
     left: 0;
     right: 0;
     display: flex;
     justify-content: center;
     gap: 6px;
+    z-index: 2;
 }
 .shop-card-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .6);
+    background: rgba(255, 255, 255, .55);
     transition: background .2s ease, transform .2s ease;
 }
 .shop-card-dot.active {
@@ -147,28 +157,51 @@
     transform: scale(1.3);
 }
 
-.shop-card .card-title,
-.shop-card .card-text,
-.shop-card h4,
-.shop-card .qty-label {
-    color: #ffffff;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, .35);
-}
-.shop-card .card-text {
-    color: #e7ecff;
+.shop-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(13, 35, 56, .78);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .35s ease, transform .35s ease;
+    pointer-events: none;
 }
 
-.btn-pill-accent-teal {
-    background: #91fff4;
-    color: #0b3d3a;
+.shop-card-square:hover .shop-card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.shop-card-overlay .card-title,
+.shop-card-overlay h4,
+.shop-card-overlay .qty-label {
+    color: #ffffff;
+}
+.shop-card-overlay .card-text {
+    color: #cfe0ee;
+    line-height: 1.5;
+    margin-bottom: .75rem;
+}
+
+.btn-pill-accent {
+    background: #ffffff;
+    color: #10283d;
     border: none;
     border-radius: 40px;
     font-weight: 600;
-    padding: .5rem 1.4rem;
+    padding: .55rem 1.5rem;
 }
-.btn-pill-accent-teal:hover {
-    background: #6ff0e3;
-    color: #0b3d3a;
+.btn-pill-accent:hover {
+    background: #d9e6f2;
+    color: #10283d;
 }
 
 .btn-pill-circle {
@@ -184,21 +217,19 @@
 }
 
 .btn-pill-circle-plus {
-    background: #91a7ff;
-    color: #1a237e;
+    background: #ffffff;
+    color: #10283d;
 }
 .btn-pill-circle-plus:hover {
-    background: #748ffc;
-    color: #1a237e;
+    background: #d9e6f2;
 }
 
 .btn-pill-circle-minus {
-    background: #ffd8a8;
-    color: #7a3e00;
+    background: rgba(255, 255, 255, .25);
+    color: #ffffff;
 }
 .btn-pill-circle-minus:hover {
-    background: #f79d69;
-    color: #ffffff;
+    background: rgba(255, 255, 255, .4);
 }
 </style>
 
@@ -242,5 +273,22 @@
     render();
     startAutoplay();
 })();
+</script>
+
+<script>
+if (!window.__shopCardClickBound) {
+    window.__shopCardClickBound = true;
+
+    // клик по карточке ведёт на страницу товара,
+    // если клик не по кнопке/форме корзины и не по стрелкам карусели
+    document.addEventListener("click", (e) => {
+        const card = e.target.closest(".shop-card-square");
+        if (!card) return;
+        if (e.target.closest("form") || e.target.closest(".shop-card-nav")) return;
+
+        const href = card.dataset.href;
+        if (href) window.location.href = href;
+    });
+}
 </script>
 {{end}}
