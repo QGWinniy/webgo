@@ -67,6 +67,22 @@
 if (!window.__shopCardClickBound) {
     window.__shopCardClickBound = true;
 
+    let touchedCard;
+
+    document.addEventListener("touchstart", (e) => {
+        touchedCard = e.target.closest(".shop-card-square");
+        if (touchedCard) touchedCard.classList.add("is-touching");
+    }, { passive: true });
+
+    const clearTouchedCard = () => {
+        if (!touchedCard) return;
+        touchedCard.classList.remove("is-touching");
+        touchedCard = null;
+    };
+
+    document.addEventListener("touchend", clearTouchedCard, { passive: true });
+    document.addEventListener("touchcancel", clearTouchedCard, { passive: true });
+
     // клик по карточке ведёт на страницу товара,
     // если клик не по форме корзины
     document.addEventListener("click", (e) => {
