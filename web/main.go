@@ -21,6 +21,7 @@ type Product struct {
 	Price       int      `json:"price"`
 	Description string   `json:"description"`
 	Images      []string `json:"images"`
+	Videos      []string `json:"videos"`
 	// HtmlPath    string   `json:"html_path"`
 }
 
@@ -40,6 +41,48 @@ func nl2br(s string) template.HTML {
 	escaped := template.HTMLEscapeString(s)
 	escaped = strings.ReplaceAll(escaped, "\n", "<br>")
 	return template.HTML(escaped)
+}
+
+// imageURL converts paths stored in the database into URLs served by this app.
+// Product images are mounted from ./image at the /image/ route.
+func imageURL(image string) string {
+	image = strings.TrimSpace(image)
+	if image == "" || strings.HasPrefix(image, "/image/") ||
+		strings.HasPrefix(image, "http://") || strings.HasPrefix(image, "https://") ||
+		strings.HasPrefix(image, "data:") {
+		return image
+	}
+
+	image = strings.TrimPrefix(image, "/")
+	image = strings.TrimPrefix(image, "image/")
+	return "/image/" + image
+}
+
+func normalizeProductImages(product *Product) {
+	for i, image := range product.Images {
+		product.Images[i] = imageURL(image)
+	}
+}
+
+// videoURL converts paths stored in the database into URLs served by this app.
+// Product videos are mounted from ./video at the /video/ route.
+func videoURL(video string) string {
+	video = strings.TrimSpace(video)
+	if video == "" || strings.HasPrefix(video, "/video/") ||
+		strings.HasPrefix(video, "http://") || strings.HasPrefix(video, "https://") ||
+		strings.HasPrefix(video, "data:") {
+		return video
+	}
+
+	video = strings.TrimPrefix(video, "/")
+	video = strings.TrimPrefix(video, "video/")
+	return "/video/" + video
+}
+
+func normalizeProductVideos(product *Product) {
+	for i, video := range product.Videos {
+		product.Videos[i] = videoURL(video)
+	}
 }
 
 func dict(values ...interface{}) map[string]interface{} {
@@ -98,6 +141,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			"templates/index.html",
 			"templates/product_card.html",
 			
+			"templates/header.html",
+			"templates/footer.html",
 		)
 
 	if err != nil {
@@ -114,7 +159,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func cartHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("cart")
 	if err != nil || cookie.Value == "" {
-		tmpl := template.Must(template.ParseFiles("templates/cart.html"))
+		tmpl := template.Must(template.ParseFiles("templates/cart.html", "templates/header.html"))
 		tmpl.Execute(w, nil)
 		return
 	}
@@ -158,7 +203,7 @@ func cartHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/cart.html"))
+	tmpl := template.Must(template.ParseFiles("templates/cart.html", "templates/header.html"))
 	tmpl.Execute(w, cart)
 }
 
@@ -343,6 +388,8 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+	normalizeProductImages(&product)
+	normalizeProductVideos(&product)
 
 	count := 0
 
@@ -371,7 +418,10 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 			"json":  toJSON,
 			"nl2br": nl2br,
 		}).
-		ParseFiles("templates/product.html")
+		ParseFiles(
+			"templates/product.html",
+			"templates/header.html",
+		)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -392,6 +442,18 @@ func main() {
 		),
 	)
 
+	http.Handle("/static/",
+		http.StripPrefix("/static/",
+			http.FileServer(http.Dir("./static")),
+		),
+	)
+
+	http.Handle("/video/",
+		http.StripPrefix("/video/",
+			http.FileServer(http.Dir("./video")),
+		),
+	)
+
 	http.HandleFunc("/cart/add", addToCart)
 
 	http.HandleFunc("/cart/remove", removeToCart)
@@ -401,12 +463,6 @@ func main() {
 	http.HandleFunc("/product/", productHandler)
 
 	http.HandleFunc("/cart", cartHandler)
-
-	// http.Handle("/static/",
-	// 	http.StripPrefix("/static/",
-	// 		http.FileServer(http.Dir("./static")),
-	// 	),
-	// )
 
 	http.ListenAndServe(":8080", nil)
 }

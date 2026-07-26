@@ -1,0 +1,86 @@
+body {
+    background: #f7f1ee;
+    overflow-x: hidden;
+}
+
+.catalog-hero {
+    position: relative;
+    left: 50%;
+    width: 100vw;
+    height: clamp(280px, 42vw, 560px);
+    overflow: hidden;
+    transform: translateX(-50%);
+    margin-bottom: 3rem;
+}
+
+.catalog-hero > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.catalog-hero__shade {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1;
+    padding: clamp(6rem, 10vw, 7.5rem) 1.5rem 2rem;
+    background: linear-gradient(180deg, rgba(27, 10, 2, .56), rgba(27, 10, 2, .05) 65%);
+    text-align: center;
+}
+
+.catalog-hero .shop-header {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: .65rem 0;
+}
+
+.catalog-hero .shop-header__logo img {
+    width: 150px;
+}
+
+.catalog-hero .shop-header__cart img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.catalog-hero .shop-header__menu {
+    gap: 1rem;
+}
+
+.catalog-hero .shop-header__link {
+    color: #ffffff;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, .55);
+}
+
+.catalog-hero .shop-header__link:hover { color: #ffffff; }
+
+.catalog-hero .shop-header__logo img,
+.catalog-hero .shop-header__cart img {
+    filter: brightness(0) invert(1);
+    filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .55)) brightness(0) invert(1);
+}
+
+.catalog-hero h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(2rem, 4.5vw, 4.25rem);
+    font-weight: 700;
+    line-height: 1.1;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, .45);
+}
+
+.page-title { color: #471c04; text-align: center; font-weight: 700; }
+.empty-note { color: #6b3214; text-align: center; }
+
+.btn-pill-accent { background: #471c04; color: #ffffff; border: none; border-radius: 40px; font-weight: 600; padding: .55rem 1.5rem; }
+.btn-pill-accent:hover, .btn-pill-circle-plus:hover, .btn-pill-circle-minus:hover { background: #6b3214; color: #ffffff; }
+.btn-pill-circle { width: 40px; height: 40px; border-radius: 50%; border: none; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
+.btn-pill-circle-plus, .btn-pill-circle-minus { background: #471c04; color: #ffffff; }

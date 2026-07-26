@@ -1,0 +1,97 @@
+body {
+    min-height: 100vh;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.shop-header {
+    padding: 1rem 0;
+    background: #ffffff;
+    color: #471c04;
+    border-bottom: 1px solid #f0e9e5;
+}
+
+.shop-header__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.shop-header__logo img {
+    display: block;
+    width: 180px;
+    height: auto;
+}
+
+.shop-header__menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.25rem;
+}
+
+.shop-header__link {
+    color: #471c04;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.shop-header__link:hover {
+    color: #6b3214;
+    text-decoration: underline;
+}
+
+.shop-header__cart img {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+.shop-footer {
+    background: #ffffff;
+    border-top: 1px solid #f0e9e5;
+    margin-top: 3rem;
+    padding: 2.5rem 0;
+}
+
+.shop-footer .container {
+    max-width: 480px;
+}
+
+.footer-link-btn {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    background: #471c04;
+    color: #ffffff;
+    border-radius: 40px;
+    padding: .75rem 1.25rem;
+    margin-bottom: .9rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background .15s ease;
+}
+
+.footer-link-btn:hover {
+    background: #6b3214;
+    color: #ffffff;
+}
+
+.footer-link-btn .icon {
+    font-size: 1.2rem;
+    width: 1.5rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .shop-header__content,
+    .shop-header__menu {
+        flex-wrap: wrap;
+    }
+
+    .shop-header__menu {
+        gap: .75rem;
+    }
+}

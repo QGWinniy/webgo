@@ -18,6 +18,7 @@ type Product struct {
 	Price       int      `json:"price"`
 	Description string   `json:"description"`
 	Images      []string `json:"images"`
+	Videos      []string `json:"videos"`
 
 	// HtmlPath    string   `json:"html_path"`
 }
@@ -67,7 +68,7 @@ func productGet(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		
+
 		imgRows, err := db.Query("SELECT url FROM product_images WHERE product_id = $1", p.ID)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -83,6 +84,23 @@ func productGet(w http.ResponseWriter, r *http.Request) {
 		imgRows.Close()
 
 		p.Images = images
+
+		videoRows, err := db.Query("SELECT url FROM product_video WHERE product_id = $1", p.ID)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		for videoRows.Next() {
+			var url string
+			if err := videoRows.Scan(&url); err != nil {
+				videoRows.Close()
+				http.Error(w, err.Error(), 500)
+				return
+			}
+			p.Videos = append(p.Videos, url)
+		}
+		videoRows.Close()
 
 		products = append(products, p)
 	}
@@ -147,6 +165,20 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 			var url string
 			if err := rows.Scan(&url); err == nil {
 				p.Images = append(p.Images, url)
+			}
+		}
+	}
+
+	rows, err = db.Query(`
+		SELECT url FROM product_video WHERE product_id = $1
+	`, id)
+	if err == nil {
+		defer rows.Close()
+
+		for rows.Next() {
+			var url string
+			if err := rows.Scan(&url); err == nil {
+				p.Videos = append(p.Videos, url)
 			}
 		}
 	}

@@ -33,10 +33,10 @@
 
         <div class="shop-card-overlay">
             <h5 class="card-title fw-bold">{{$p.Name}}</h5>
-            <p class="card-text">{{nl2br $p.Description}}</p>
-            <h4 class="mb-3">{{$p.Price}} ₽</h4>
+            <!-- <p class="card-text">{{nl2br $p.Description}}</p>
+            <h4 class="mb-3">{{$p.Price}} ₽</h4> -->
 
-            {{if eq $count 0}}
+            <!-- {{if eq $count 0}}
 
                 <form action="/cart/add" method="POST" class="cart-form d-flex justify-content-center gap-2 align-items-center">
                     <input type="hidden" name="id" value="{{$p.ID}}">
@@ -66,172 +66,11 @@
 
                 </div>
 
-            {{end}}
+            {{end}} -->
         </div>
 
     </div>
 </div>
-
-<style>
-.shop-card-square {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 22px;
-    overflow: hidden;
-    cursor: pointer;
-    background: rgba(255, 255, 255, .06);
-    box-shadow: 0 10px 26px rgba(4, 14, 26, .35);
-}
-
-.shop-card-img-wrap {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-}
-
-.shop-card-img-track {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    transition: transform .45s ease;
-}
-
-.shop-card-img-slide {
-    flex: 0 0 100%;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform .5s ease, filter .5s ease;
-}
-
-.shop-card-square:hover .shop-card-img-slide {
-    transform: scale(1.08);
-    filter: brightness(.5);
-}
-
-.shop-card-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, .8);
-    color: #10283d;
-    font-size: 1.2rem;
-    font-weight: 700;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 2;
-}
-.shop-card-nav:hover {
-    background: #ffffff;
-}
-.shop-card-nav-prev { left: 10px; }
-.shop-card-nav-next { right: 10px; }
-
-.shop-card-dots {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    z-index: 2;
-}
-.shop-card-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, .55);
-    transition: background .2s ease, transform .2s ease;
-}
-.shop-card-dot.active {
-    background: #ffffff;
-    transform: scale(1.3);
-}
-
-.shop-card-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 1.5rem;
-    background: rgba(13, 35, 56, .78);
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity .35s ease, transform .35s ease;
-    pointer-events: none;
-}
-
-.shop-card-square:hover .shop-card-overlay {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-.shop-card-overlay .card-title,
-.shop-card-overlay h4,
-.shop-card-overlay .qty-label {
-    color: #ffffff;
-}
-.shop-card-overlay .card-text {
-    color: #cfe0ee;
-    line-height: 1.5;
-    margin-bottom: .75rem;
-}
-
-.btn-pill-accent {
-    background: #ffffff;
-    color: #10283d;
-    border: none;
-    border-radius: 40px;
-    font-weight: 600;
-    padding: .55rem 1.5rem;
-}
-.btn-pill-accent:hover {
-    background: #d9e6f2;
-    color: #10283d;
-}
-
-.btn-pill-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    font-weight: 700;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-pill-circle-plus {
-    background: #ffffff;
-    color: #10283d;
-}
-.btn-pill-circle-plus:hover {
-    background: #d9e6f2;
-}
-
-.btn-pill-circle-minus {
-    background: rgba(255, 255, 255, .25);
-    color: #ffffff;
-}
-.btn-pill-circle-minus:hover {
-    background: rgba(255, 255, 255, .4);
-}
-</style>
 
 <script>
 (() => {
@@ -279,8 +118,7 @@
 if (!window.__shopCardClickBound) {
     window.__shopCardClickBound = true;
 
-    // клик по карточке ведёт на страницу товара,
-    // если клик не по кнопке/форме корзины и не по стрелкам карусели
+
     document.addEventListener("click", (e) => {
         const card = e.target.closest(".shop-card-square");
         if (!card) return;

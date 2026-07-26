@@ -13,3 +13,11 @@ CREATE TABLE product_images (
 
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
+
+CREATE TABLE product_video (
+    id SERIAL PRIMARY KEY,
+    product_id INT NOT NULL,
+    url TEXT NOT NULL,
+
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
