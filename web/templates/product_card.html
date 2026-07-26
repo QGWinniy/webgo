@@ -12,7 +12,7 @@
 <div class="col-12 col-md-6 mb-4">
     <div class="shop-card-square" id="card-{{$p.ID}}" data-href="/product/{{$p.ID}}">
 
-        <div id="carouselProductCard{{$p.ID}}" class="carousel slide shop-card-carousel" data-bs-ride="carousel" data-bs-interval="2500">
+        <div id="carouselProductCard{{$p.ID}}" class="carousel slide shop-card-carousel" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner">
                 {{range $idx, $img := $p.Images}}
                     <div class="carousel-item{{if eq $idx 0}} active{{end}}">
@@ -24,7 +24,7 @@
 
         <div class="shop-card-overlay">
             <h5 class="card-title fw-bold">{{$p.Name}}</h5>
-            <p class="card-text">{{nl2br $p.Description}}</p>
+            <!-- <p class="card-text">{{nl2br $p.Description}}</p>
             <h4 class="mb-3">{{$p.Price}} ₽</h4>
 
             {{if eq $count 0}}
@@ -57,7 +57,7 @@
 
                 </div>
 
-            {{end}}
+            {{end}} -->
         </div>
 
     </div>
@@ -82,6 +82,27 @@ if (!window.__shopCardClickBound) {
 
     document.addEventListener("touchend", clearTouchedCard, { passive: true });
     document.addEventListener("touchcancel", clearTouchedCard, { passive: true });
+
+    let parallaxFrame;
+    const updateCardParallax = () => {
+        parallaxFrame = null;
+        const viewportCenter = window.innerHeight / 2;
+
+        document.querySelectorAll(".shop-card-square .product-image").forEach((image) => {
+            const rect = image.closest(".shop-card-square").getBoundingClientRect();
+            const cardCenter = rect.top + rect.height / 2;
+            const offset = Math.max(-18, Math.min(18, (viewportCenter - cardCenter) * .055));
+            image.style.setProperty("--shop-card-image-offset", `${offset}px`);
+        });
+    };
+
+    const requestCardParallax = () => {
+        if (!parallaxFrame) parallaxFrame = requestAnimationFrame(updateCardParallax);
+    };
+
+    window.addEventListener("scroll", requestCardParallax, { passive: true });
+    window.addEventListener("resize", requestCardParallax, { passive: true });
+    requestCardParallax();
 
     // клик по карточке ведёт на страницу товара,
     // если клик не по форме корзины

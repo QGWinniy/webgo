@@ -109,14 +109,17 @@ body {
 }
 
 .shop-card-carousel .product-image {
+    --shop-card-image-offset: 0px;
+    --shop-card-image-scale: 1.12;
     height: 100%;
-    transition: transform .5s ease, filter .5s ease;
+    transform: translateY(var(--shop-card-image-offset)) scale(var(--shop-card-image-scale));
+    transition: transform .2s ease-out, filter .5s ease;
 }
 
 .shop-card-square:hover .product-image,
 .shop-card-square:active .product-image,
 .shop-card-square.is-touching .product-image {
-    transform: scale(1.08);
+    --shop-card-image-scale: 1.16;
     filter: brightness(.5);
 }
 
