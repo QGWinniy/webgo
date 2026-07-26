@@ -12,31 +12,22 @@
 <div class="col-12 col-md-6 mb-4">
     <div class="shop-card-square" id="card-{{$p.ID}}" data-href="/product/{{$p.ID}}">
 
-        <div class="shop-card-img-wrap" id="wrap-{{$p.ID}}">
-            <div class="shop-card-img-track" id="track-{{$p.ID}}">
-                {{range $p.Images}}
-                    <img src="{{.}}" class="shop-card-img-slide">
+        <div id="carouselProductCard{{$p.ID}}" class="carousel slide shop-card-carousel" data-bs-ride="carousel" data-bs-interval="2500">
+            <div class="carousel-inner">
+                {{range $idx, $img := $p.Images}}
+                    <div class="carousel-item{{if eq $idx 0}} active{{end}}">
+                        <img src="{{$img}}" class="product-image" alt="{{$p.Name}}">
+                    </div>
                 {{end}}
             </div>
-
-            {{if gt (len $p.Images) 1}}
-                <button type="button" class="shop-card-nav shop-card-nav-prev" data-id="{{$p.ID}}" data-dir="-1" aria-label="Предыдущее фото">‹</button>
-                <button type="button" class="shop-card-nav shop-card-nav-next" data-id="{{$p.ID}}" data-dir="1" aria-label="Следующее фото">›</button>
-
-                <div class="shop-card-dots" id="dots-{{$p.ID}}">
-                    {{range $idx, $img := $p.Images}}
-                        <span class="shop-card-dot{{if eq $idx 0}} active{{end}}"></span>
-                    {{end}}
-                </div>
-            {{end}}
         </div>
 
         <div class="shop-card-overlay">
             <h5 class="card-title fw-bold">{{$p.Name}}</h5>
-            <!-- <p class="card-text">{{nl2br $p.Description}}</p>
-            <h4 class="mb-3">{{$p.Price}} ₽</h4> -->
+            <p class="card-text">{{nl2br $p.Description}}</p>
+            <h4 class="mb-3">{{$p.Price}} ₽</h4>
 
-            <!-- {{if eq $count 0}}
+            {{if eq $count 0}}
 
                 <form action="/cart/add" method="POST" class="cart-form d-flex justify-content-center gap-2 align-items-center">
                     <input type="hidden" name="id" value="{{$p.ID}}">
@@ -66,63 +57,22 @@
 
                 </div>
 
-            {{end}} -->
+            {{end}}
         </div>
 
     </div>
 </div>
 
 <script>
-(() => {
-    const images = JSON.parse('{{json $p.Images}}');
-    if (!images || images.length <= 1) return;
-
-    const track = document.getElementById("track-{{$p.ID}}");
-    const dotsWrap = document.getElementById("dots-{{$p.ID}}");
-    if (!track) return;
-
-    const dots = dotsWrap ? Array.from(dotsWrap.children) : [];
-    let i = 0;
-    let autoplay;
-
-    const render = () => {
-        track.style.transform = `translateX(${-i * 100}%)`;
-        dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
-    };
-
-    const goTo = (dir) => {
-        i = (i + dir + images.length) % images.length;
-        render();
-    };
-
-    const startAutoplay = () => {
-        clearInterval(autoplay);
-        autoplay = setInterval(() => goTo(1), 2500);
-    };
-
-    document.querySelectorAll('[data-id="{{$p.ID}}"]').forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            goTo(parseInt(btn.dataset.dir, 10));
-            startAutoplay();
-        });
-    });
-
-    render();
-    startAutoplay();
-})();
-</script>
-
-<script>
 if (!window.__shopCardClickBound) {
     window.__shopCardClickBound = true;
 
-
+    // клик по карточке ведёт на страницу товара,
+    // если клик не по форме корзины
     document.addEventListener("click", (e) => {
         const card = e.target.closest(".shop-card-square");
         if (!card) return;
-        if (e.target.closest("form") || e.target.closest(".shop-card-nav")) return;
+        if (e.target.closest("form")) return;
 
         const href = card.dataset.href;
         if (href) window.location.href = href;

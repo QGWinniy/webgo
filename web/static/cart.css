@@ -18,33 +18,3 @@ body { background: #f7f1ee; }
     .cart-actions { justify-content: flex-start; padding: 0 1rem 1rem; }
     .cart-total { gap: 1rem; align-items: flex-start !important; flex-direction: column; }
 }
-
-.shop-card-square {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;      /* поменяй на 4/3 или 16/9, если хочешь не строго квадрат */
-    border-radius: 18px;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.shop-card-img-wrap {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-}
-
-.shop-card-img-track {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    transition: transform .4s ease;
-}
-
-.shop-card-img-slide {
-    flex: 0 0 100%;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;   /* ключевое — без этого картинка не заполняет блок */
-    display: block;
-}

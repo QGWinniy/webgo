@@ -84,3 +84,91 @@ body {
 .btn-pill-accent:hover, .btn-pill-circle-plus:hover, .btn-pill-circle-minus:hover { background: #6b3214; color: #ffffff; }
 .btn-pill-circle { width: 40px; height: 40px; border-radius: 50%; border: none; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
 .btn-pill-circle-plus, .btn-pill-circle-minus { background: #471c04; color: #ffffff; }
+
+/* Карточки каталога */
+.shop-card-square {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .06);
+    box-shadow: 0 10px 26px rgba(4, 14, 26, .35);
+    cursor: pointer;
+}
+
+.shop-card-carousel,
+.shop-card-carousel .carousel-inner,
+.shop-card-carousel .carousel-item {
+    width: 100%;
+    height: 100%;
+}
+
+.shop-card-carousel .carousel-inner {
+    height: 100%;
+}
+
+.shop-card-carousel .product-image {
+    height: 100%;
+    transition: transform .5s ease, filter .5s ease;
+}
+
+.shop-card-square:hover .product-image {
+    transform: scale(1.08);
+    filter: brightness(.5);
+}
+
+.shop-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    transform: translateY(6px);
+    background: rgba(13, 35, 56, .78);
+    color: #ffffff;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease, transform .35s ease;
+}
+
+.shop-card-square:hover .shop-card-overlay {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.shop-card-overlay .card-title,
+.shop-card-overlay h4,
+.shop-card-overlay .qty-label { color: #ffffff; }
+
+.shop-card-overlay .card-text {
+    margin-bottom: .75rem;
+    color: #cfe0ee;
+    line-height: 1.5;
+}
+
+.shop-card-overlay .btn-pill-accent,
+.shop-card-overlay .btn-pill-circle-plus {
+    border: 0;
+    background: #ffffff;
+    color: #10283d;
+}
+
+.shop-card-overlay .btn-pill-accent:hover,
+.shop-card-overlay .btn-pill-circle-plus:hover {
+    background: #d9e6f2;
+    color: #10283d;
+}
+
+.shop-card-overlay .btn-pill-circle-minus {
+    border: 0;
+    background: rgba(255, 255, 255, .25);
+    color: #ffffff;
+}
+
+.shop-card-overlay .btn-pill-circle-minus:hover { background: rgba(255, 255, 255, .4); }
