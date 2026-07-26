@@ -13,14 +13,16 @@
 
     <section class="catalog-hero" aria-labelledby="catalog-hero-title">
         {{template "header.html"}}
-        <img src="/image/static/landscape.jpg" alt="Пейзаж Ставропольского края">
+        <video class="catalog-hero__video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="/video/45.mp4" type="video/mp4">
+        </video>
         <div class="catalog-hero__shade">
-            <h1 id="catalog-hero-title">Подарочное издание<br>о Ставропольском крае</h1>
+            <!-- <h1 id="catalog-hero-title">Подарочное издание<br>о Ставропольском крае</h1> -->
         </div>
     </section>
 
     <div class="container">
-        <h2 class="mb-4 page-title">Каталог товаров</h2>
+        <!-- <h2 class="mb-4 page-title">Каталог товаров</h2> -->
 
         <div class="row">
             {{if .Products}}
