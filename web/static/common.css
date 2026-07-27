@@ -1,9 +1,18 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 @font-face {
     font-family: "Geologica";
     font-style: normal;
     font-weight: 500;
-    font-display: swap;
+    font-display: optional;
     src: url("/static/fonts/geologica-medium.ttf") format("truetype");
+}
+
+html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
 }
 
 body {
@@ -11,10 +20,12 @@ body {
     background: #ffffff;
     font-family: "Geologica", cursive;
     font-weight: 500;
+    margin: 0;
 }
 
 .shop-header {
-    padding: .1rem 0;
+    width: 100%;
+    padding: 1.65rem 0 .3rem;
     background: #ffffff;
     color: #471c04;
     border-bottom: 1px solid #f0e9e5;
@@ -22,9 +33,15 @@ body {
 
 .shop-header__content {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 1.5rem;
+    width: 100%;
+}
+
+.shop-header__logo {
+    flex: 0 0 auto;
+    line-height: 0;
 }
 
 .shop-header__logo img {
@@ -35,14 +52,16 @@ body {
 
 .shop-header__menu {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: flex-end;
-    gap: 1.25rem;
+    gap: 1.6rem;
+    flex: 1 1 auto;
 }
 
 .shop-header__link {
     color: #471c04;
     font-weight: 500;
+    line-height: 1;
     text-decoration: none;
     white-space: nowrap;
 }
@@ -52,10 +71,15 @@ body {
     text-decoration: underline;
 }
 
+.shop-header__cart {
+    flex: 0 0 auto;
+    line-height: 0;
+}
+
 .shop-header__cart img {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
 }
 
 .shop-footer {
@@ -103,4 +127,13 @@ body {
     .shop-header__menu {
         gap: .75rem;
     }
+} 
+.shop-header__cart {
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    line-height: 0;
 }

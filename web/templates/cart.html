@@ -2,100 +2,94 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Корзина</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/common.css" rel="stylesheet">
     <link href="/static/cart.css" rel="stylesheet">
 </head>
 <body>
+    {{template "header.html"}}
 
-{{template "header.html"}}
+    <main class="container cart-page">
+        <h1 class="cart-page-title mb-4">Корзина</h1>
+        <a class="btn cart-back-link" href="/">← Назад к товарам</a>
 
-<main class="container cart-page py-5">
-    <h1 class="cart-page-title mb-4">Корзина</h1>
-    <a href="/" class="btn cart-back-link">← Назад к товарам</a>
+        {{if not .}}
+            <div class="alert cart-empty mb-0" role="status">Корзина пока пуста.</div>
+        {{else}}
+            <div class="row g-3">
+                {{range .}}
+                    <article class="col-12">
+                        <div class="card cart-item-card">
+                            <div class="row g-0 align-items-center">
+                                <div class="col-md-3">
+                                    <img src="{{index .Product.Images 0}}" class="cart-product-image" alt="{{.Product.Name}}">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card-body">
+                                        <h2 class="h5 cart-item-title mb-2">{{.Product.Name}}</h2>
+                                        <p class="cart-item-description mb-3">{{.Product.Description}}</p>
+                                        <span class="badge cart-price fs-6">{{.Product.Price}} ₽</span>
+                                        <div class="mt-3">Количество: <strong>{{.Qty}}</strong></div>
+                                        <div>Сумма: <strong>{{.Sum}} ₽</strong></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="cart-actions pe-md-3">
+                                        <form action="/cart/remove" method="POST">
+                                            <input type="hidden" name="id" value="{{.Product.ID}}">
+                                            <input type="hidden" name="return" value="/cart">
+                                            <button class="btn cart-action-btn cart-quantity-btn" type="submit" aria-label="Убрать один товар">−</button>
+                                        </form>
+                                        <form action="/cart/add" method="POST">
+                                            <input type="hidden" name="id" value="{{.Product.ID}}">
+                                            <input type="hidden" name="qty" value="1">
+                                            <input type="hidden" name="return" value="/cart">
+                                            <button class="btn cart-action-btn cart-quantity-btn" type="submit" aria-label="Добавить один товар">+</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {{end}}
+            </div>
 
-    {{if not .}}
-        <div class="alert cart-empty">Корзина пустая 😐</div>
-    {{end}}
+            <section class="cart-total mt-4 p-4 d-flex justify-content-between align-items-center" aria-label="Итог заказа">
+                <h2 class="h4 cart-total-title mb-0">Итого</h2>
+                <button class="btn cart-checkout-btn btn-lg" type="button" data-bs-toggle="modal" data-bs-target="#checkoutModal">Оформить заказ</button>
+            </section>
+        {{end}}
+    </main>
 
-    <div class="row g-3">
-        {{range .}}
-        <div class="col-12">
-            <div class="card border-0 cart-item-card">
-                <div class="row g-0 align-items-center">
-                    <div class="col-md-3">
-                        <img src="{{index .Product.Images 0}}" class="cart-product-image" alt="{{.Product.Name}}">
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/checkout" method="POST">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5">Оформление заказа</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="card-body">
-                            <h5 class="card-title mb-1">{{.Product.Name}}</h5>
-                            <p class="text-muted mb-2">{{.Product.Description}}</p>
-                            <span class="badge cart-price fs-6">{{.Product.Price}} ₽</span>
-                            <div class="mt-2"><strong>Количество:</strong> {{.Qty}}</div>
-                            <div><strong>Сумма:</strong> {{.Sum}} ₽</div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="name">Имя</label>
+                            <input id="name" type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="phone">Телефон</label>
+                            <input id="phone" type="tel" name="phone" class="form-control" required>
                         </div>
                     </div>
-
-                    <div class="col-md-3">
-                        <div class="cart-actions pe-md-3">
-                            <form action="/cart/remove" method="POST">
-                                <input type="hidden" name="id" value="{{.Product.ID}}">
-                                <input type="hidden" name="return" value="/cart">
-                                <button class="btn cart-action-btn cart-quantity-btn" aria-label="Убрать один товар">−</button>
-                            </form>
-                            <form action="/cart/add" method="POST">
-                                <input type="hidden" name="id" value="{{.Product.ID}}">
-                                <input type="hidden" name="qty" value="1">
-                                <input type="hidden" name="return" value="/cart">
-                                <button class="btn cart-action-btn cart-quantity-btn" aria-label="Добавить один товар">+</button>
-                            </form>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn cart-checkout-btn">Отправить заказ</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
-        {{end}}
     </div>
 
-    {{if .}}
-    <div class="cart-total mt-4 p-4 bg-white d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Итого</h4>
-        <button class="btn cart-checkout-btn btn-lg" data-bs-toggle="modal" data-bs-target="#checkoutModal">
-            Оформить заказ
-        </button>
-    </div>
-    {{end}}
-</main>
-
-<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/checkout" method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title">Оформление заказа</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label" for="name">Имя</label>
-                        <input id="name" type="text" name="name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="phone">Телефон</label>
-                        <input id="phone" type="text" name="phone" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn cart-checkout-btn">Отправить заказ</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

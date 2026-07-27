@@ -433,8 +433,23 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/about.html", "templates/header.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.ExecuteTemplate(w, "about.html", nil); err != nil {
+		log.Println("TEMPLATE ERROR:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func main() {
 	http.HandleFunc("/", handler)
+
+	http.HandleFunc("/about", aboutHandler)
 
 	http.Handle("/image/",
 		http.StripPrefix("/image/",

@@ -1,15 +1,13 @@
-body {
+.catalog-page {
     background: #f7f1ee;
-    overflow-x: hidden;
+    padding-bottom: 3rem;
 }
 
 .catalog-hero {
     position: relative;
-    left: 50%;
-    width: 100vw;
+    width: 100%;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    transform: translateX(-50%);
     margin-bottom: 3rem;
 }
 
@@ -28,40 +26,9 @@ body {
     align-items: flex-start;
     justify-content: center;
     z-index: 1;
-    padding: clamp(6rem, 10vw, 7.5rem) 1.5rem 2rem;
+    padding: 2rem 1.5rem;
     background: linear-gradient(180deg, rgba(27, 10, 2, .56), rgba(27, 10, 2, .05) 65%);
     text-align: center;
-}
-
-.catalog-hero .shop-header {
-    position: absolute;
-    z-index: 2;
-    width: 100%;
-    background: transparent;
-    border: 0;
-    padding: .65rem 0;
-}
-
-.catalog-hero .shop-header__link {
-    color: #ffffff;
-    font-weight: 500;
-}
-
-.catalog-hero .shop-header__link:hover { color: #ffffff; }
-
-.catalog-hero .shop-header__logo img,
-.catalog-hero .shop-header__cart img {
-    filter: brightness(0) invert(1);
-    filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .55)) brightness(0) invert(1);
-}
-
-.catalog-hero h1 {
-    margin: 0;
-    color: #ffffff;
-    font-size: clamp(2rem, 4.5vw, 4.25rem);
-    font-weight: 700;
-    line-height: 1.1;
-    text-shadow: 0 2px 16px rgba(0, 0, 0, .45);
 }
 
 .page-title { color: #471c04; text-align: center; font-weight: 700; }
