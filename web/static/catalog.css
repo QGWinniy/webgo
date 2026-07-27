@@ -42,23 +42,9 @@ body {
     padding: .65rem 0;
 }
 
-.catalog-hero .shop-header__logo img {
-    width: 150px;
-}
-
-.catalog-hero .shop-header__cart img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-}
-
-.catalog-hero .shop-header__menu {
-    gap: 1rem;
-}
-
 .catalog-hero .shop-header__link {
     color: #ffffff;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, .55);
+    font-weight: 500;
 }
 
 .catalog-hero .shop-header__link:hover { color: #ffffff; }
