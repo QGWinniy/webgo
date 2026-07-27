@@ -80,6 +80,7 @@ body {
     display: block;
     width: 26px;
     height: 26px;
+    filter: invert(12%) sepia(30%) saturate(2537%) hue-rotate(350deg) brightness(95%) contrast(105%);
 }
 
 .shop-footer {

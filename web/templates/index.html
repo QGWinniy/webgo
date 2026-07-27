@@ -10,9 +10,6 @@
     <link href="/static/catalog.css" rel="stylesheet">
 </head>
 <body>
-
-    {{template "header.html"}}
-
     <main class="catalog-page">
         <section class="catalog-hero" aria-labelledby="catalog-hero-title">
             <video class="catalog-hero__video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
@@ -20,6 +17,9 @@
             </video>
             <div class="catalog-hero__shade">
              
+            </div>
+            <div class="position-relative z-2">
+                {{template "header.html"}}
             </div>
         </section>
 
