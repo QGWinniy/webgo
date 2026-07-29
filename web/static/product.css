@@ -3,6 +3,7 @@
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 20px;
+    cursor: zoom-in;
 }
 
 .carousel-inner { border-radius: 20px; }
@@ -52,8 +53,140 @@
     color: #ffffff;
 }
 
+.product-cart-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.product-cart-link {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .js-product-cart {
+        position: static !important;
+        margin-top: 1rem;
+        padding: .75rem;
+        background: rgba(255, 255, 255, .96);
+        border-radius: .75rem;
+        box-shadow: 0 6px 18px rgba(71, 28, 4, .12);
+    }
+
+    .product-cart-add-btn {
+        width: 100%;
+    }
+
+    .product-cart-controls {
+        justify-content: space-between;
+        gap: .5rem;
+    }
+
+    .product-cart-controls > .d-flex {
+        gap: .45rem !important;
+    }
+
+    .product-cart-link {
+        display: inline-flex;
+        flex: 1 1 auto;
+        align-items: center;
+        justify-content: center;
+        min-height: 45px;
+        white-space: nowrap;
+    }
+
+    .product-cart-controls .qty {
+        width: 2rem;
+        font-size: 1rem;
+    }
+
+    .product-cart-controls .btn-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+}
+
 .product-video {
     width: 100%;
-    border-radius: 20px;    
+    border-radius: 20px;
     background: #000;
+}
+
+.lightbox-modal .modal-dialog {
+    max-width: 95vw;
+    margin: 1.5rem auto;
+}
+
+.lightbox-modal .modal-content {
+    background: rgba(10, 15, 30, .95);
+    border: none;
+}
+
+.lightbox-modal .modal-body {
+    padding: 0;
+}
+
+.lightbox-modal .btn-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    padding: .6rem;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: .9;
+}
+
+.lightbox-carousel .carousel-item {
+    height: 85vh;
+}
+
+.lightbox-carousel .carousel-item.active,
+.lightbox-carousel .carousel-item-next,
+.lightbox-carousel .carousel-item-prev {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-carousel .carousel-item img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 85vh;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.lightbox-carousel .carousel-control-prev,
+.lightbox-carousel .carousel-control-next {
+    width: 8%;
+}
+
+@media (max-width: 768px) {
+    body.modal-open {
+        padding-right: 0 !important;
+    }
+
+    .lightbox-modal .modal-dialog {
+        max-width: 100vw;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .lightbox-modal .modal-content {
+        min-height: 100vh;
+        background: rgba(10, 15, 30, .95);
+        border-radius: 0;
+    }
+
+    .lightbox-carousel .carousel-item {
+        height: 100vh;
+    }
+
+    .lightbox-carousel .carousel-item img {
+        max-width: 86vw;
+        max-height: 78vh;
+    }
 }

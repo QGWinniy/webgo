@@ -9,293 +9,184 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preload" href="/static/fonts/geologica-medium.ttf" as="font" type="font/ttf" crossorigin>
     <link href="/static/common.css?v=header-mobile-2" rel="stylesheet">
-    <link href="/static/product.css" rel="stylesheet">
-    <style>
-        /* если есть смысл — перенеси это в product.css */
-        .product-image {
-            cursor: zoom-in;
-        }
-
-        .lightbox-modal .modal-dialog {
-            max-width: 95vw;
-            margin: 1.5rem auto;
-        }
-        .lightbox-modal .modal-content {
-            background: rgba(10, 15, 30, .95);
-            border: none;
-        }
-        .lightbox-modal .modal-body {
-            padding: 0;
-        }
-        .lightbox-modal .btn-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            z-index: 5;
-            background-color: #fff;
-            opacity: .9;
-            border-radius: 50%;
-            padding: .6rem;
-        }
-
-        /* НИЧЕГО не трогаем в базовом поведении .carousel-item / .carousel-inner —
-           Bootstrap сам скрывает неактивные слайды через display:none.
-           Меняем только размер и центрирование картинки внутри активного слайда. */
-        .lightbox-carousel .carousel-item {
-            height: 85vh;
-        }
-        /* Bootstrap во время анимации перехода временно показывает не только
-           .active, но и .carousel-item-next/.carousel-item-prev — если не
-           дать им тот же display:flex, слайд "выныривает" рывком в самом
-           конце перехода вместо плавного появления */
-        .lightbox-carousel .carousel-item.active,
-        .lightbox-carousel .carousel-item-next,
-        .lightbox-carousel .carousel-item-prev {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .lightbox-carousel .carousel-item img {
-            max-width: 100%;
-            max-height: 85vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            margin: 0 auto;
-        }
-        .lightbox-carousel .carousel-control-prev,
-        .lightbox-carousel .carousel-control-next {
-            width: 8%;
-        }
-    </style>
+    <link href="/static/product.css?v=mobile-lightbox-fullscreen-4" rel="stylesheet">
 </head>
 <body>
+    {{template "header.html"}}
 
-{{template "header.html"}}
+    <main class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div id="carouselProduct" class="carousel slide">
+                    <div class="carousel-inner">
+                        {{range $i, $img := .Product.Images}}
+                            <div class="carousel-item {{if eq $i 0}}active{{end}}">
+                                <img src="{{$img}}" class="product-image" data-index="{{$i}}" onclick="openLightbox({{$i}})" alt="{{$.Product.Name}}">
+                            </div>
+                        {{end}}
+                    </div>
 
-<div class="container py-5">
-
-<div class="row g-5">
-
-<div class="col-lg-6">
-
-<div id="carouselProduct" class="carousel slide">
-
-<div class="carousel-inner">
-
-{{range $i,$img:=.Product.Images}}
-
-<div class="carousel-item {{if eq $i 0}}active{{end}}">
-<img src="{{$img}}" class="product-image" data-index="{{$i}}" onclick="openLightbox({{$i}})">
-</div>
-
-{{end}}
-
-</div>
-
-{{if gt (len .Product.Images) 1}}
-
-<button class="carousel-control-prev" type="button" data-bs-target="#carouselProduct" data-bs-slide="prev">
-<span class="carousel-control-prev-icon"></span>
-</button>
-
-<button class="carousel-control-next" type="button" data-bs-target="#carouselProduct" data-bs-slide="next">
-<span class="carousel-control-next-icon"></span>
-</button>
-
-{{end}}
-
-</div>
-
-</div>
-
-<div class="col-lg-6">
-
-<div class="product-box h-100 d-flex flex-column">
-
-<h1 class="fw-bold mb-3">{{.Product.Name}}</h1>
-
-<div class="description mb-4">
-{{nl2br .Product.Description}}
-</div>
-
-<div class="price mb-4">
-{{.Product.Price}} ₽
-</div>
-
-<div class="js-product-cart" data-product-id="{{.Product.ID}}" data-count="{{.Count}}">
-{{if eq .Count 0}}
-
-<form action="/cart/add" method="POST" class="js-cart-add-form">
-
-<input type="hidden" name="id" value="{{.Product.ID}}">
-<input type="hidden" name="qty" value="1">
-<input type="hidden" name="return" value="/product/{{.Product.ID}}">
-
-<button class="btn product-action-btn btn-lg" type="submit">
-Добавить в корзину
-</button>
-
-</form>
-
-{{else}}
-
-<div class="d-flex align-items-center gap-3">
-
-<form action="/cart/remove" method="POST">
-
-<input type="hidden" name="id" value="{{.Product.ID}}">
-<input type="hidden" name="return" value="/product/{{.Product.ID}}">
-
-<button class="btn product-action-btn btn-circle">
-−
-</button>
-
-</form>
-
-<div class="qty">
-{{.Count}}
-</div>
-
-<form action="/cart/add" method="POST">
-
-<input type="hidden" name="id" value="{{.Product.ID}}">
-<input type="hidden" name="qty" value="1">
-<input type="hidden" name="return" value="/product/{{.Product.ID}}">
-
-<button class="btn product-action-btn btn-circle">
-+
-</button>
-
-</form>
-
-</div>
-
-{{end}}
-</div>
-
-</div>
-
-</div>
-
-{{if .Product.Videos}}
-<section class="mt-5">
-    <h2 class="h3 mb-4">Видео товара</h2>
-
-    <div class="row g-4">
-        {{range .Product.Videos}}
-        <div class="col-12 col-lg-6">
-            <video class="product-video" controls preload="metadata">
-                <source src="{{.}}">
-                Ваш браузер не поддерживает воспроизведение видео.
-            </video>
-        </div>
-        {{end}}
-    </div>
-</section>
-{{end}}
-
-<script>
-document.querySelectorAll(".js-product-cart").forEach((cartControl) => {
-    const id = cartControl.dataset.productId;
-
-    const getCart = () => {
-        const cookie = document.cookie.split("; ").find((item) => item.startsWith("cart="));
-        return cookie ? decodeURIComponent(cookie.slice("cart=".length)).split(",").filter(Boolean) : [];
-    };
-
-    const saveCart = (cart) => {
-        document.cookie = `cart=${encodeURIComponent(cart.join(","))}; Path=/; SameSite=Lax; Max-Age=31536000`;
-    };
-
-    const render = () => {
-        const count = getCart().filter((cartID) => cartID === id).length;
-
-        if (count === 0) {
-            cartControl.innerHTML = '<button class="btn product-action-btn btn-lg" type="button" data-cart-action="add">Добавить в корзину</button>';
-            return;
-        }
-
-        cartControl.innerHTML = `
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn product-action-btn btn-circle" type="button" data-cart-action="remove">−</button>
-                <div class="qty">${count}</div>
-                <button class="btn product-action-btn btn-circle" type="button" data-cart-action="add">+</button>
-            </div>`;
-    };
-
-    cartControl.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-cart-action]");
-        if (!button) return;
-
-        const cart = getCart();
-        if (button.dataset.cartAction === "add") cart.push(id);
-        if (button.dataset.cartAction === "remove") {
-            const index = cart.indexOf(id);
-            if (index !== -1) cart.splice(index, 1);
-        }
-
-        saveCart(cart);
-        render();
-    });
-
-    render();
-});
-</script>
-
-</div>
-
-</div>
-
-<!-- Лайтбокс: увеличенные фото с листанием и кнопкой закрытия -->
-<div class="modal fade lightbox-modal" id="imageLightboxModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-      <div class="modal-body">
-
-        <div id="lightboxCarouselProduct" class="carousel slide lightbox-carousel">
-          <div class="carousel-inner">
-            {{range $i,$img:=.Product.Images}}
-            <div class="carousel-item {{if eq $i 0}}active{{end}}">
-              <img src="{{$img}}">
+                    {{if gt (len .Product.Images) 1}}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselProduct" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselProduct" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    {{end}}
+                </div>
             </div>
-            {{end}}
-          </div>
 
-          {{if gt (len .Product.Images) 1}}
-          <button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarouselProduct" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#lightboxCarouselProduct" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-          </button>
-          {{end}}
+            <div class="col-lg-6">
+                <div class="product-box h-100 d-flex flex-column">
+                    <h1 class="fw-bold mb-3">{{.Product.Name}}</h1>
+
+                    <div class="description mb-4">
+                        {{nl2br .Product.Description}}
+                    </div>
+
+                    <div class="price mb-4">
+                        {{.Product.Price}} ₽
+                    </div>
+
+                    <div class="js-product-cart" data-product-id="{{.Product.ID}}">
+                        {{if eq .Count 0}}
+                            <form action="/cart/add" method="POST">
+                                <input type="hidden" name="id" value="{{.Product.ID}}">
+                                <input type="hidden" name="qty" value="1">
+                                <input type="hidden" name="return" value="/product/{{.Product.ID}}">
+                                <button class="btn product-action-btn btn-lg" type="submit">Добавить в корзину</button>
+                            </form>
+                        {{else}}
+                            <div class="d-flex align-items-center gap-3">
+                                <form action="/cart/remove" method="POST">
+                                    <input type="hidden" name="id" value="{{.Product.ID}}">
+                                    <input type="hidden" name="return" value="/product/{{.Product.ID}}">
+                                    <button class="btn product-action-btn btn-circle" type="submit">−</button>
+                                </form>
+
+                                <div class="qty">{{.Count}}</div>
+
+                                <form action="/cart/add" method="POST">
+                                    <input type="hidden" name="id" value="{{.Product.ID}}">
+                                    <input type="hidden" name="qty" value="1">
+                                    <input type="hidden" name="return" value="/product/{{.Product.ID}}">
+                                    <button class="btn product-action-btn btn-circle" type="submit">+</button>
+                                </form>
+                            </div>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
         </div>
 
-      </div>
+        {{if .Product.Videos}}
+            <section class="mt-5">
+                <h2 class="h3 mb-4">Видео товара</h2>
+
+                <div class="row g-4">
+                    {{range .Product.Videos}}
+                        <div class="col-12 col-lg-6">
+                            <video class="product-video" controls preload="metadata">
+                                <source src="{{.}}">
+                                Ваш браузер не поддерживает видео.
+                            </video>
+                        </div>
+                    {{end}}
+                </div>
+            </section>
+        {{end}}
+    </main>
+
+    <div class="modal fade lightbox-modal" id="imageLightboxModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                <div class="modal-body">
+                    <div id="lightboxCarouselProduct" class="carousel slide lightbox-carousel">
+                        <div class="carousel-inner">
+                            {{range $i, $img := .Product.Images}}
+                                <div class="carousel-item {{if eq $i 0}}active{{end}}">
+                                    <img src="{{$img}}" alt="{{$.Product.Name}}">
+                                </div>
+                            {{end}}
+                        </div>
+
+                        {{if gt (len .Product.Images) 1}}
+                            <button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarouselProduct" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#lightboxCarouselProduct" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openLightbox(index) {
+            const items = document.querySelectorAll("#lightboxCarouselProduct .carousel-item");
+            items.forEach((item, itemIndex) => {
+                item.classList.toggle("active", itemIndex === index);
+            });
 
-<script>
-function openLightbox(index) {
-    // выставляем активный слайд напрямую через class="active",
-    // как это и так работает у обычной карусели Bootstrap —
-    // никакой самодеятельности с display/flex, просто нужный слайд становится активным
-    var items = document.querySelectorAll('#lightboxCarouselProduct .carousel-item');
-    items.forEach(function (item, i) {
-        item.classList.toggle('active', i === index);
-    });
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("imageLightboxModal"));
+            modal.show();
+        }
 
-    var modalEl = document.getElementById('imageLightboxModal');
-    var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modal.show();
-}
-</script>
+        document.querySelectorAll(".js-product-cart").forEach((cartControl) => {
+            const id = cartControl.dataset.productId;
 
+            const getCart = () => {
+                const cookie = document.cookie.split("; ").find((item) => item.startsWith("cart="));
+                return cookie ? decodeURIComponent(cookie.slice("cart=".length)).split(",").filter(Boolean) : [];
+            };
+
+            const saveCart = (cart) => {
+                document.cookie = `cart=${cart.join(",")}; Path=/; SameSite=Lax; Max-Age=31536000`;
+            };
+
+            const render = () => {
+                const count = getCart().filter((cartID) => cartID === id).length;
+
+                if (count === 0) {
+                    cartControl.innerHTML = '<button class="btn product-action-btn btn-lg product-cart-add-btn" type="button" data-cart-action="add">Добавить в корзину</button>';
+                    return;
+                }
+
+                cartControl.innerHTML = `
+                    <div class="product-cart-controls">
+                        <a class="btn product-action-btn product-cart-link" href="/cart">Перейти в корзину</a>
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="btn product-action-btn btn-circle" type="button" data-cart-action="remove">−</button>
+                            <div class="qty">${count}</div>
+                            <button class="btn product-action-btn btn-circle" type="button" data-cart-action="add">+</button>
+                        </div>
+                    </div>`;
+            };
+
+            cartControl.addEventListener("click", (event) => {
+                const button = event.target.closest("[data-cart-action]");
+                if (!button) return;
+
+                const cart = getCart();
+                if (button.dataset.cartAction === "add") cart.push(id);
+                if (button.dataset.cartAction === "remove") {
+                    const index = cart.indexOf(id);
+                    if (index !== -1) cart.splice(index, 1);
+                }
+
+                saveCart(cart);
+                render();
+            });
+
+            render();
+        });
+    </script>
 </body>
 </html>
 {{end}}
