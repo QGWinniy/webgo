@@ -53,6 +53,13 @@
     filter: brightness(0) invert(1);
 }
 
+@media (max-width: 768px) {
+    .catalog-hero .shop-header__menu {
+        background: rgba(27, 10, 2, .72);
+        box-shadow: none;
+    }
+}
+
 .page-title { color: #471c04; text-align: center; font-weight: 700; }
 .empty-note { color: #6b3214; text-align: center; }
 

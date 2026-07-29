@@ -1,18 +1,51 @@
 {{define "header.html"}}
+
 <nav class="shop-header">
     <div class="container shop-header__content">
         <a class="shop-header__logo" href="/" aria-label="На главную">
             <img src="/image/static/logo_shmell.svg" alt="Шмель">
         </a>
 
-        <div class="shop-header__menu">
+        <button class="shop-header__toggle" type="button" aria-label="Открыть меню" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="shop-header__menu" id="shop-menu">
             <a class="shop-header__link" href="#corporate">КОРПОРАТИВНЫЕ ИЗДАНИЯ</a>
             <a class="shop-header__link" href="/about">О НАС</a>
             <a class="shop-header__link" href="#contacts">КОНТАКТЫ</a>
-            <a class="shop-header__cart" href="/cart" aria-label="Корзина">
-                <img src="/image/static/icon_basket.svg" alt="">
-            </a>
         </div>
+        <a class="shop-header__cart" href="/cart" aria-label="Корзина">
+            <img src="/image/static/icon_basket.svg" alt="">
+        </a>
     </div>
 </nav>
+<script>
+document.querySelectorAll(".shop-header").forEach((header) => {
+    const toggle = header.querySelector(".shop-header__toggle");
+    const menu = header.querySelector(".shop-header__menu");
+
+    toggle.addEventListener("click", () => {
+        const isOpen = menu.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!header.contains(event.target)) {
+            menu.classList.remove("is-open");
+            toggle.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            menu.classList.remove("is-open");
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.focus();
+        }
+    });
+});
+</script>
 {{end}}
