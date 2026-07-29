@@ -278,6 +278,19 @@ func addToCart(w http.ResponseWriter, r *http.Request) {
 		Path:  "/",
 	})
 
+	if strings.Contains(r.Header.Get("Accept"), "application/json") {
+		count := 0
+		for _, cartID := range strings.Split(cart, ",") {
+			if cartID == id {
+				count++
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		json.NewEncoder(w).Encode(map[string]int{"count": count})
+		return
+	}
+
 	http.Redirect(w, r, returnURL, http.StatusSeeOther)
 }
 

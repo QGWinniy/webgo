@@ -123,15 +123,16 @@
 {{.Product.Price}} ₽
 </div>
 
+<div class="js-product-cart" data-product-id="{{.Product.ID}}" data-count="{{.Count}}">
 {{if eq .Count 0}}
 
-<form action="/cart/add" method="POST">
+<form action="/cart/add" method="POST" class="js-cart-add-form">
 
 <input type="hidden" name="id" value="{{.Product.ID}}">
 <input type="hidden" name="qty" value="1">
 <input type="hidden" name="return" value="/product/{{.Product.ID}}">
 
-<button class="btn product-action-btn btn-lg">
+<button class="btn product-action-btn btn-lg" type="submit">
 Добавить в корзину
 </button>
 
@@ -171,6 +172,7 @@
 </div>
 
 {{end}}
+</div>
 
 </div>
 
@@ -192,6 +194,54 @@
     </div>
 </section>
 {{end}}
+
+<script>
+document.querySelectorAll(".js-product-cart").forEach((cartControl) => {
+    const id = cartControl.dataset.productId;
+
+    const getCart = () => {
+        const cookie = document.cookie.split("; ").find((item) => item.startsWith("cart="));
+        return cookie ? decodeURIComponent(cookie.slice("cart=".length)).split(",").filter(Boolean) : [];
+    };
+
+    const saveCart = (cart) => {
+        document.cookie = `cart=${encodeURIComponent(cart.join(","))}; Path=/; SameSite=Lax; Max-Age=31536000`;
+    };
+
+    const render = () => {
+        const count = getCart().filter((cartID) => cartID === id).length;
+
+        if (count === 0) {
+            cartControl.innerHTML = '<button class="btn product-action-btn btn-lg" type="button" data-cart-action="add">Добавить в корзину</button>';
+            return;
+        }
+
+        cartControl.innerHTML = `
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn product-action-btn btn-circle" type="button" data-cart-action="remove">−</button>
+                <div class="qty">${count}</div>
+                <button class="btn product-action-btn btn-circle" type="button" data-cart-action="add">+</button>
+            </div>`;
+    };
+
+    cartControl.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-cart-action]");
+        if (!button) return;
+
+        const cart = getCart();
+        if (button.dataset.cartAction === "add") cart.push(id);
+        if (button.dataset.cartAction === "remove") {
+            const index = cart.indexOf(id);
+            if (index !== -1) cart.splice(index, 1);
+        }
+
+        saveCart(cart);
+        render();
+    });
+
+    render();
+});
+</script>
 
 </div>
 
