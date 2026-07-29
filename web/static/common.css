@@ -56,6 +56,7 @@ body {
     justify-content: flex-end;
     gap: clamp(.65rem, 1.8vw, 1.6rem);
     flex: 1 1 auto;
+    order: 1;
 }
 
 .shop-header__toggle {
@@ -98,6 +99,7 @@ body {
     align-items: flex-end;
     justify-content: center;
     line-height: 0;
+    order: 2;
 }
 
 .shop-header__cart img {
@@ -145,7 +147,7 @@ body {
 
 @media (max-width: 768px) {
     .shop-header__logo img {
-        width: 80px !important;
+        width: 100px !important;
     }
 
     .shop-header__content {
@@ -184,18 +186,20 @@ body {
         width: 36px;
         height: 36px;
         padding: 7px;
-        margin-left: auto;
+        margin-left: .5rem;
     }
 
     .shop-header__cart {
         align-self: center;
-        flex-basis: 16px !important;
-        width: 16px !important;
-        height: 16px !important;
+        flex-basis: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        margin-left: auto;
+        order: 0;
     }
 
     .shop-header__cart img {
-        width: 16px !important;
-        height: 16px !important;
+        width: 20px !important;
+        height: 20px !important;
     }
 }
